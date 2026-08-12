@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - LEBJ PRO</title>
+    
+    <!-- Fuentes y Tipografías -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Hojas de Estilo -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="LOGO_LEBJ_METAL.png" alt="LEBJ Logo" class="nav-logo-img"> 
+            LEBJ <span>ADMIN PANEL</span>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main>
+        <div class="admin-container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Gestor de Partidos</h2>
+                <p>Selecciona un partido existente de tu base de datos para cambiar su horario, sede o marcador, o añade uno nuevo.</p>
+            </div>
+
+            <!-- Selector de Partidos -->
+            <div class="selector-box">
+                <div class="form-group no-margin">
+                    <label for="match-selector">
+                        <i class="fa-solid fa-list"></i> Seleccionar Partido a Modificar (o Crear Nuevo)
+                    </label>
+                    <select id="match-selector" class="form-control">
+                        <option value="NEW">➕ Registrar un Partido Nuevo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Formulario de Edición / Creación -->
+            <form id="admin-match-form">
+                <div class="form-group">
+                    <label for="match-date">Fecha y Hora</label>
+                    <input type="text" id="match-date" class="form-control" placeholder="Ej: 16 de Agosto - 17:00" required>
+                </div>
+                
+                <div class="form-grid grid-2">
+                    <div class="form-group">
+                        <label for="match-teama">Equipo Local</label>
+                        <input type="text" id="match-teama" class="form-control" placeholder="Ej: Spartanchris El Salto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="match-teamb">Equipo Visitante</label>
+                        <input type="text" id="match-teamb" class="form-control" placeholder="Ej: Cathal" required>
+                    </div>
+                </div>
+
+                <div class="form-grid grid-2">
+                    <div class="form-group">
+                        <label for="match-scorea">Puntuación Local</label>
+                        <input type="text" id="match-scorea" class="form-control" value="-">
+                    </div>
+                    <div class="form-group">
+                        <label for="match-scoreb">Puntuación Visitante</label>
+                        <input type="text" id="match-scoreb" class="form-control" value="-">
+                    </div>
+                </div>
+
+                <div class="form-grid grid-3">
+                    <div class="form-group">
+                        <label for="match-status">Estatus</label>
+                        <select id="match-status" class="form-control">
+                            <option value="pending">Por Jugar (pending)</option>
+                            <option value="finished">Finalizado (finished)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="match-phase">Fase / Jornada</label>
+                        <input type="text" id="match-phase" class="form-control" value="J1">
+                    </div>
+                    <div class="form-group">
+                        <label for="match-group">Grupo</label>
+                        <select id="match-group" class="form-control">
+                            <option value="Grupo A">Grupo A</option>
+                            <option value="Grupo B">Grupo B</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="match-court">Sede / Cancha</label>
+                    <input type="text" id="match-court" class="form-control" placeholder="Ej: Unidad Deportiva Luis Estrada, El Salto" required>
+                </div>
+
+                <button type="submit" id="btn-submit" class="admin-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Actualizar Base de Datos
+                </button>
+                <p id="form-alert" class="alert-msg"></p>
+            </form>
+        </div>
+    </main>
+
+    <!-- Script JavaScript Separado -->
+    <script src="script.js"></script>
+</body>
+</html>
