@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - LEBJ PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container { max-width: 850px; margin: 3rem auto; padding: 2.5rem; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border-color); backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 0.9rem 1.2rem; background: rgba(11, 13, 18, 0.8); border: 1px solid var(--border-color); color: white; border-radius: 12px; font-size: 1rem; outline: none; transition: var(--transition); }
+        .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow); }
+        .admin-btn { background: var(--primary-color); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; transition: var(--transition); box-shadow: 0 4px 15px var(--primary-glow); }
+        .admin-btn:hover { background: #b45309; transform: translateY(-2px); }
+        .alert-msg { margin-top: 1rem; text-align: center; font-weight: 600; }
+        .selector-box { background: rgba(217, 119, 6, 0.08); border: 1px dashed var(--primary-color); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="LOGO_LEBJ_METAL.png" alt="LEBJ Logo" class="nav-logo-img"> 
+            LEBJ <span>ADMIN PANEL</span>
+        </div>
+    </nav>
+
+    <main>
+        <div class="admin-container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Gestor de Partidos</h2>
+                <p>Selecciona un partido existente de tu base de datos para cambiar su horario, sede o marcador, o añade uno nuevo.</p>
+            </div>
+
+            <!-- Selector de partidos existentes -->
+            <div class="selector-box">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label><i class="fa-solid fa-list"></i> Seleccionar Partido a Modificar (o Crear Nuevo)</label>
+                    <select id="match-selector" class="form-control">
+                        <option value="NEW">➕ Registrar un Partido Nuevo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <form id="admin-match-form">
+                <div class="form-group">
+                    <label>Fecha y Hora</label>
+                    <input type="text" id="match-date" class="form-control" placeholder="Ej: 16 de Agosto - 17:00" required>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Equipo Local</label>
+                        <input type="text" id="match-teama" class="form-control" placeholder="Ej: Spartanchris El Salto" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Equipo Visitante</label>
+                        <input type="text" id="match-teamb" class="form-control" placeholder="Ej: Cathal" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Puntuación Local</label>
+                        <input type="text" id="match-scorea" class="form-control" value="-">
+                    </div>
+                    <div class="form-group">
+                        <label>Puntuación Visitante</label>
+                        <input type="text" id="match-scoreb" class="form-control" value="-">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Estatus</label>
+                        <select id="match-status" class="form-control">
+                            <option value="pending">Por Jugar (pending)</option>
+                            <option value="finished">Finalizado (finished)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fase / Jornada</label>
+                        <input type="text" id="match-phase" class="form-control" value="J1">
+                    </div>
+                    <div class="form-group">
+                        <label>Grupo</label>
+                        <select id="match-group" class="form-control">
+                            <option value="Grupo A">Grupo A</option>
+                            <option value="Grupo B">Grupo B</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Sede / Cancha</label>
+                    <input type="text" id="match-court" class="form-control" placeholder="Ej: Unidad Deportiva Luis Estrada, El Salto" required>
+                </div>
+
+                <button type="submit" class="admin-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Actualizar en Google Sheets</button>
+                <p id="form-alert" class="alert-msg"></p>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbz_FSpPwZfk0WZQ0F6T8s0cuvH2EZvce1qWHpQzZaGkuAsfXQz89f8DhC9QjqKjmAeH/exec";
+        let allMatches = [];
+
+        // Cargar los partidos existentes al abrir el panel
+        async function loadExistingMatches() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                allMatches = data.schedule || [];
+                
+                const selector = document.getElementById("match-selector");
+                allMatches.forEach((m, index) => {
+                    const opt = document.createElement("option");
+                    opt.value = index;
+                    opt.text = `[${m.phase}] ${m.teamA} vs ${m.teamB} (${m.date})`;
+                    selector.appendChild(opt);
+                });
+            } catch (e) {
+                console.error("No se pudieron cargar los partidos del Sheet", e);
+            }
+        }
+
+        // Al seleccionar un partido de la lista, rellenar el formulario automáticamente
+        document.getElementById("match-selector").addEventListener("change", (e) => {
+            const val = e.target.value;
+            if (val === "NEW") {
+                document.getElementById("admin-match-form").reset();
+                return;
+            }
+            
+            const match = allMatches[val];
+            document.getElementById("match-date").value = match.date || "";
+            document.getElementById("match-teama").value = match.teamA || "";
+            document.getElementById("match-teamb").value = match.teamB || "";
+            document.getElementById("match-scorea").value = match.scoreA || "-";
+            document.getElementById("match-scoreb").value = match.scoreB || "-";
+            document.getElementById("match-status").value = match.status || "pending";
+            document.getElementById("match-phase").value = match.phase || "J1";
+            document.getElementById("match-group").value = match.group || "Grupo A";
+            document.getElementById("match-court").value = match.court || "";
+        });
+
+        // Enviar actualización o creación al servidor
+        document.getElementById("admin-match-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const alertBox = document.getElementById("form-alert");
+            alertBox.style.color = "var(--secondary-color)";
+            alertBox.innerText = "Sincronizando con Google Sheets...";
+
+            const payload = {
+                sheetName: "Calendario",
+                teamA: document.getElementById("match-teama").value,
+                teamB: document.getElementById("match-teamb").value,
+                rowValues: [
+                    document.getElementById("match-date").value,
+                    document.getElementById("match-teama").value,
+                    document.getElementById("match-teamb").value,
+                    document.getElementById("match-scorea").value,
+                    document.getElementById("match-scoreb").value,
+                    document.getElementById("match-status").value,
+                    document.getElementById("match-court").value,
+                    document.getElementById("match-phase").value,
+                    document.getElementById("match-group").value
+                ]
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if(result.status === "success") {
+                    alertBox.style.color = "#25d366";
+                    alertBox.innerText = "¡Cambios guardados con éxito en Google Sheets!";
+                    setTimeout(() => location.reload(), 1500); // Recarga para actualizar la lista
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (err) {
+                alertBox.style.color = "#dc2743";
+                alertBox.innerText = "Error: " + err.message;
+            }
+        });
+
+        loadExistingMatches();
+    </script>
+</body>
+</html>
