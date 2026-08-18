@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - LEBJ PRO</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="img/LEBJ_ORIGINAL.png?v=4">
+    <meta name="theme-color" content="#d97706">
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="LOGO_LEBJ_METAL.png" alt="LEBJ Logo" class="nav-logo-img"> 
+            LEBJ <span>ADMIN PANEL</span>
+        </div>
+    </nav>
+
+    <main>
+        <div class="admin-container">
+            <!-- Sistema de Pestañas Visuales -->
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-target="tab-partidos"><i class="fa-solid fa-calendar-days"></i> Partidos</button>
+                <button class="tab-btn" data-target="tab-equipos"><i class="fa-solid fa-shield-halved"></i> Franquicias</button>
+                <button class="tab-btn" data-target="tab-jugadores"><i class="fa-solid fa-users"></i> Jugadores</button>
+            </div>
+
+            <!-- TAB 1: GESTIÓN DE PARTIDOS -->
+            <div id="tab-partidos" class="tab-content active">
+                <div class="section-header">
+                    <h2>Gestor de Partidos</h2>
+                    <p>Actualiza marcadores, sedes o registra nuevos encuentros.</p>
+                </div>
+
+                <div class="selector-box">
+                    <div class="form-group no-margin">
+                        <select id="match-selector" class="form-control">
+                            <option value="NEW">Cargando datos...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <form id="admin-match-form">
+                    <div class="form-group">
+                        <label>Fecha y Hora</label>
+                        <input type="text" id="match-date" class="form-control" placeholder="Ej: 16 de Agosto - 17:00" required>
+                    </div>
+                    
+                    <div class="form-grid grid-2">
+                        <div class="form-group">
+                            <label>Equipo Local</label>
+                            <input type="text" id="match-teama" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Equipo Visitante</label>
+                            <input type="text" id="match-teamb" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid grid-2">
+                        <div class="form-group">
+                            <label>Pts Local</label>
+                            <input type="text" id="match-scorea" class="form-control" value="-">
+                        </div>
+                        <div class="form-group">
+                            <label>Pts Visitante</label>
+                            <input type="text" id="match-scoreb" class="form-control" value="-">
+                        </div>
+                    </div>
+
+                    <div class="form-grid grid-3">
+                        <div class="form-group">
+                            <label>Estatus</label>
+                            <select id="match-status" class="form-control">
+                                <option value="pending">Por Jugar</option>
+                                <option value="finished">Finalizado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fase</label>
+                            <input type="text" id="match-phase" class="form-control" value="J1">
+                        </div>
+                        <div class="form-group">
+                            <label>Grupo</label>
+                            <select id="match-group" class="form-control">
+                                <option value="Grupo A">Grupo A</option>
+                                <option value="Grupo B">Grupo B</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sede / Cancha</label>
+                        <input type="text" id="match-court" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Guardar Partido</button>
+                    <p class="alert-msg match-alert"></p>
+                </form>
+            </div>
+
+            <!-- TAB 2: GESTIÓN DE EQUIPOS (REDES SOCIALES) -->
+            <div id="tab-equipos" class="tab-content">
+                <div class="section-header">
+                    <h2>Gestor de Franquicias</h2>
+                    <p>Agrega o actualiza el enlace a la red social oficial de cada equipo.</p>
+                </div>
+
+                <div class="selector-box">
+                    <div class="form-group no-margin">
+                        <label>Seleccionar Equipo</label>
+                        <select id="team-selector" class="form-control">
+                            <option value="">-- Elige un equipo --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <form id="admin-team-form" style="display: none;">
+                    <div class="form-group">
+                        <label>Enlace de Red Social (URL)</label>
+                        <input type="url" id="team-social-url" class="form-control" placeholder="https://www.facebook.com/...">
+                        <small style="color: var(--text-muted); display: block; margin-top: 5px;">Deja en blanco si el equipo no tiene red social.</small>
+                    </div>
+                    <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Guardar Perfil</button>
+                    <p class="alert-msg team-alert"></p>
+                </form>
+            </div>
+
+            <!-- TAB 3: GESTIÓN DE JUGADORES -->
+            <div id="tab-jugadores" class="tab-content">
+                <div class="section-header">
+                    <h2>Gestor de Jugadores</h2>
+                    <p>Da de alta jugadores en el roster y actualiza sus estadísticas de temporada.</p>
+                </div>
+
+                <div class="selector-box form-grid grid-2">
+                    <div class="form-group no-margin">
+                        <label>1. Seleccionar Equipo</label>
+                        <select id="roster-team-selector" class="form-control">
+                            <option value="">-- Elige un equipo --</option>
+                        </select>
+                    </div>
+                    <div class="form-group no-margin">
+                        <label>2. Seleccionar Jugador</label>
+                        <select id="roster-player-selector" class="form-control" disabled>
+                            <option value="">-- Primero elige un equipo --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <form id="admin-player-form" style="display: none;">
+                    <div class="form-group">
+                        <label>Nombre del Jugador</label>
+                        <input type="text" id="player-name" class="form-control" required placeholder="Nombre completo">
+                    </div>
+                    <div class="form-grid grid-2">
+                        <div class="form-group">
+                            <label>Partidos Jugados (Asistencias)</label>
+                            <input type="number" id="player-games" class="form-control" value="0" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Puntos Totales</label>
+                            <input type="number" id="player-points" class="form-control" value="0" min="0" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Guardar Jugador</button>
+                    <p class="alert-msg player-alert"></p>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>
